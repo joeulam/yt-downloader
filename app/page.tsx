@@ -9,23 +9,48 @@ import {
   Typography,
   Alert,
   Paper,
+  CircularProgress,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
 
 export default function YouTubeDownloader() {
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
+  const [format, setFormat] = useState<"mp4" | "mp3">("mp4"); // Format selection
+  const [loading, setLoading] = useState(false); // For loading state
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!url) {
       setError("请输入有效的 YouTube 链接 (Please enter a valid YouTube URL)");
       return;
     }
 
-    const link = document.createElement("a");
-    link.href = `https://yt-backend-81363540056.europe-west1.run.app/download?url=${encodeURIComponent(url)}`;
-    link.download = "video.mp4";
-    link.click();
-    setError(""); // Clear error after download
+    try {
+      setError("");
+      setLoading(true); // Start loading
+
+      // Simulate API latency (remove in production)
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      const link = document.createElement("a");
+      link.href = `https://yt-backend-81363540056.europe-west1.run.app/download?url=${encodeURIComponent(
+        url
+      )}&format=${format}`;
+      link.download = `video.${format}`;
+      link.click();
+    } catch (err) {
+      setError("下载失败，请重试 (Download failed, please try again)");
+    } finally {
+      setLoading(false); // Stop loading
+    }
+  };
+
+  const handleFormatChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newFormat: "mp4" | "mp3" | null
+  ) => {
+    if (newFormat) setFormat(newFormat);
   };
 
   return (
@@ -39,6 +64,33 @@ export default function YouTubeDownloader() {
         p: 2,
       }}
     >
+      {/* Fullscreen loading overlay */}
+      {loading && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            bgcolor: "rgba(255, 255, 255, 0.8)",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <CircularProgress size={60} color="primary" />
+          <Typography
+            variant="h6"
+            sx={{ mt: 2, color: "#1e88e5", fontWeight: "bold" }}
+          >
+            正在下载，请稍候... (Downloading, please wait...)
+          </Typography>
+        </Box>
+      )}
+
       <Container maxWidth="sm">
         <Paper
           elevation={4}
@@ -66,6 +118,7 @@ export default function YouTubeDownloader() {
           >
             YouTube 视频下载器
           </Typography>
+
           <Typography
             variant="h6"
             sx={{
@@ -74,9 +127,9 @@ export default function YouTubeDownloader() {
               fontSize: { xs: "1rem", md: "1.2rem" },
             }}
           >
-            输入视频链接，点击按钮下载
+            输入视频链接，选择格式后下载
             <br />
-            (Enter the video link and click the button to download)
+            (Enter the video link, choose format and download)
           </Typography>
 
           {/* Input field */}
@@ -92,12 +145,29 @@ export default function YouTubeDownloader() {
             }}
           />
 
+          {/* Format Toggle */}
+          <ToggleButtonGroup
+            color="primary"
+            value={format}
+            exclusive
+            onChange={handleFormatChange}
+            sx={{ mt: 1 }}
+          >
+            <ToggleButton value="mp4" sx={{ fontSize: "1rem", px: 3 }}>
+              MP4 视频
+            </ToggleButton>
+            <ToggleButton value="mp3" sx={{ fontSize: "1rem", px: 3 }}>
+              MP3 音频
+            </ToggleButton>
+          </ToggleButtonGroup>
+
           {/* Download Button */}
           <Button
             fullWidth
             variant="contained"
             size="large"
             onClick={handleDownload}
+            disabled={loading}
             sx={{
               bgcolor: "#1e88e5",
               "&:hover": { bgcolor: "#1565c0" },
@@ -107,7 +177,7 @@ export default function YouTubeDownloader() {
               fontWeight: 600,
             }}
           >
-            下载视频 (Download Video)
+            下载 {format === "mp4" ? "视频" : "音频"}
           </Button>
 
           {/* Error Alert */}
@@ -134,7 +204,9 @@ export default function YouTubeDownloader() {
               fontSize: "1.1rem",
             }}
           >
-            * 支持 MP4 格式 (Supports MP4 format)
+            * 支持 MP4 视频 和 MP3 音频格式
+            <br />
+            (Supports MP4 video and MP3 audio formats)
           </Typography>
         </Paper>
       </Container>
