@@ -34,7 +34,10 @@ export default function YouTubeDownloader() {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const link = document.createElement("a");
-      link.href = `https://yt-backend-81363540056.europe-west1.run.app/download?url=${encodeURIComponent(
+      // link.href = `https://yt-backend-81363540056.europe-west1.run.app/download?url=${encodeURIComponent(
+      //   url
+      // )}&format=${format}`;
+      link.href = `http://localhost:8080/download?url=${encodeURIComponent(
         url
       )}&format=${format}`;
       link.download = `video.${format}`;
