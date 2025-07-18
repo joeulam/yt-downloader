@@ -22,7 +22,7 @@ export default function YouTubeDownloader() {
     setError("");
   
     const link = document.createElement("a");
-    link.href = `https://yt-downloader-api.onrender.com/download?url=${encodeURIComponent(
+    link.href = `https://yt-downloader-octx.onrender.com/download?url=${encodeURIComponent(
       url
     )}`;
     link.download = "video.mp4";
