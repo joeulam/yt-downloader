@@ -8,6 +8,7 @@ import {
   TextField,
   Typography,
   Alert,
+  Paper,
 } from "@mui/material";
 
 export default function YouTubeDownloader() {
@@ -16,17 +17,16 @@ export default function YouTubeDownloader() {
 
   const handleDownload = () => {
     if (!url) {
-      setError("Please enter a valid YouTube URL.");
+      setError("请输入有效的 YouTube 链接 (Please enter a valid YouTube URL)");
       return;
     }
-  
+
     const link = document.createElement("a");
     link.href = `https://yt-backend-81363540056.europe-west1.run.app/download?url=${encodeURIComponent(url)}`;
     link.download = "video.mp4";
     link.click();
+    setError(""); // Clear error after download
   };
-  
-  
 
   return (
     <Box
@@ -35,75 +35,108 @@ export default function YouTubeDownloader() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        bgcolor: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
+        bgcolor: "#f0f4f8",
         p: 2,
       }}
     >
-      <Container
-        maxWidth="sm"
-        sx={{
-          bgcolor: "white",
-          borderRadius: "16px",
-          boxShadow: "0px 10px 30px rgba(0,0,0,0.3)",
-          p: 5,
-          display: "flex",
-          flexDirection: "column",
-          gap: 3,
-          alignItems: "center",
-        }}
-      >
-        <Typography
-          variant="h3"
-          fontWeight="bold"
-          gutterBottom
+      <Container maxWidth="sm">
+        <Paper
+          elevation={4}
           sx={{
-            textAlign: "center",
-            background: "linear-gradient(45deg, #1e3c72, #2a5298)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
+            p: 4,
+            borderRadius: 4,
+            bgcolor: "#fffefc",
+            display: "flex",
+            flexDirection: "column",
+            gap: 3,
+            alignItems: "center",
           }}
         >
-          YouTube Downloader
-        </Typography>
+          {/* Title */}
+          <Typography
+            variant="h4"
+            fontWeight="bold"
+            sx={{
+              textAlign: "center",
+              background: "linear-gradient(45deg, #1e88e5, #42a5f5)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              fontSize: { xs: "2rem", md: "2.5rem" },
+            }}
+          >
+            YouTube 视频下载器
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              textAlign: "center",
+              color: "text.secondary",
+              fontSize: { xs: "1rem", md: "1.2rem" },
+            }}
+          >
+            输入视频链接，点击按钮下载
+            <br />
+            (Enter the video link and click the button to download)
+          </Typography>
 
-        <Typography
-          variant="body1"
-          sx={{ color: "text.secondary", textAlign: "center" }}
-        >
-          Paste a YouTube URL below to download the video in MP4 format.
-        </Typography>
+          {/* Input field */}
+          <TextField
+            fullWidth
+            label="YouTube 视频链接 (Video Link)"
+            variant="outlined"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            sx={{
+              "& input": { fontSize: "1.2rem", p: 2 },
+              "& label": { fontSize: "1.1rem" },
+            }}
+          />
 
-        <TextField
-          fullWidth
-          label="YouTube URL"
-          variant="outlined"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          sx={{ mt: 2 }}
-        />
+          {/* Download Button */}
+          <Button
+            fullWidth
+            variant="contained"
+            size="large"
+            onClick={handleDownload}
+            sx={{
+              bgcolor: "#1e88e5",
+              "&:hover": { bgcolor: "#1565c0" },
+              borderRadius: "10px",
+              fontSize: "1.3rem",
+              py: 1.5,
+              fontWeight: 600,
+            }}
+          >
+            下载视频 (Download Video)
+          </Button>
 
-        <Button
-          fullWidth
-          variant="contained"
-          size="large"
-          onClick={handleDownload}
-          sx={{
-            bgcolor: "#1e3c72",
-            "&:hover": { bgcolor: "#2a5298" },
-            borderRadius: "12px",
-            fontSize: "1.1rem",
-            fontWeight: 600,
-            py: 1.5,
-          }}
-        >
-          Download Video
-        </Button>
+          {/* Error Alert */}
+          {error && (
+            <Alert
+              severity="error"
+              sx={{
+                width: "100%",
+                fontSize: "1.1rem",
+                py: 1,
+              }}
+            >
+              {error}
+            </Alert>
+          )}
 
-        {error && (
-          <Alert severity="error" sx={{ mt: 2, width: "100%" }}>
-            {error}
-          </Alert>
-        )}
+          {/* Footer Note */}
+          <Typography
+            variant="body2"
+            sx={{
+              textAlign: "center",
+              color: "gray",
+              mt: 2,
+              fontSize: "1.1rem",
+            }}
+          >
+            * 支持 MP4 格式 (Supports MP4 format)
+          </Typography>
+        </Paper>
       </Container>
     </Box>
   );
