@@ -19,15 +19,13 @@ export default function YouTubeDownloader() {
       setError("Please enter a valid YouTube URL.");
       return;
     }
-    setError("");
   
     const link = document.createElement("a");
-    link.href = `https://yt-downloader-octx.onrender.com/download?url=${encodeURIComponent(
-      url
-    )}`;
+    link.href = `https://yt-backend-81363540056.europe-west1.run.app/download?url=${encodeURIComponent(url)}`;
     link.download = "video.mp4";
     link.click();
   };
+  
   
 
   return (
