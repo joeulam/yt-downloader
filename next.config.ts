@@ -1,4 +1,4 @@
-import type { NextConfig } from "@/yt-downloader/node_modules/next";
+import { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
